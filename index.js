@@ -20,11 +20,9 @@ server.post("/api/zoos", (req, res) => {
         res.status(201).json(ids[0])
       })
       .catch(err => {
-        res
-          .status(500)
-          .json({
-            error: "There was an error while saving the zoo to the database"
-          })
+        res.status(500).json({
+          error: "There was an error while saving the zoo to the database"
+        })
       })
   }
 })
@@ -38,6 +36,26 @@ server.get("/api/zoos", (req, res) => {
       res
         .status(500)
         .json({ error: "The zoos information could not be retrieved." })
+    })
+})
+
+server.get("/api/zoos/:id", (req, res) => {
+  db("zoos")
+    .where({ id: Number(req.params.id) })
+    .first()
+    .then(zoo => {
+      if (zoo) {
+        res.status(200).json(zoo)
+      } else {
+        res
+          .status(404)
+          .json({ message: "The zoo with the specified ID does not exist." })
+      }
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: "The zoo information could not be retrieved." })
     })
 })
 
