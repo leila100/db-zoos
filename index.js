@@ -77,6 +77,30 @@ server.delete("/api/zoos/:id", (req, res) => {
     })
 })
 
+server.put("/api/zoos/:id", (req, res) => {
+  const name = req.body.name
+  if (!name) {
+    res.status(400).json({ error: "Please provide a name for the zoo" })
+  } else {
+    db("zoos")
+      .where({ id: Number(req.params.id) })
+      .update({ name: name })
+      .then(count => {
+        console.log(count)
+        if (count > 0) res.status(201).json(count)
+        else
+          res
+            .status(404)
+            .json({ message: "The zoo with the specified ID does not exist." })
+      })
+      .catch(err => {
+        res.status(500).json({
+          error: "There was an error while updating the zoo to the database"
+        })
+      })
+  }
+})
+
 const port = 3300
 server.listen(port, function() {
   console.log(`\n=== Web API Listening on http://localhost:${port} ===\n`)
