@@ -12,7 +12,7 @@ server.use(helmet())
 server.post("/api/zoos", (req, res) => {
   const name = req.body.name
   if (!name) {
-    res.status(400).json({ error: "Please give a name to the zoo" })
+    res.status(400).json({ error: "Please provide a name for the zoo" })
   } else {
     db("zoos")
       .insert({ name: name })
@@ -20,9 +20,25 @@ server.post("/api/zoos", (req, res) => {
         res.status(201).json(ids[0])
       })
       .catch(err => {
-        res.status(500).json(err)
+        res
+          .status(500)
+          .json({
+            error: "There was an error while saving the zoo to the database"
+          })
       })
   }
+})
+
+server.get("/api/zoos", (req, res) => {
+  db("zoos")
+    .then(zoos => {
+      res.status(200).json(zoos)
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: "The zoos information could not be retrieved." })
+    })
 })
 
 const port = 3300
