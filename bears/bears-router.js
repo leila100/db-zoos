@@ -6,7 +6,7 @@ const router = express.Router()
 const db = knex(knexConfig.development)
 
 router.post("/", (req, res) => {
-  const name = req.body.name
+  const { name } = req.body
   if (!name) {
     res.status(400).json({ error: "Please provide a name for the bear" })
   } else {
@@ -74,7 +74,7 @@ router.delete("/:id", (req, res) => {
 })
 
 router.put("/:id", (req, res) => {
-  const name = req.body.name
+  const { name } = req.body
   if (!name) {
     res.status(400).json({ error: "Please provide a name for the bear" })
   } else {
@@ -82,7 +82,7 @@ router.put("/:id", (req, res) => {
       .where({ id: Number(req.params.id) })
       .update({ name: name })
       .then(count => {
-        if (count > 0) res.status(201).json(count)
+        if (count > 0) res.status(200).json(count)
         else
           res
             .status(404)
